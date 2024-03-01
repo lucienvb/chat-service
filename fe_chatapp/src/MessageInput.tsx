@@ -7,7 +7,7 @@ export default function MessageInput({
     const [value, setValue] = useState("")
     return (
         <>
-            <input onChange={(e) => setValue(e.target.value)} placeholder='Type your message ...' value={value} />
+            <input onChange={(e) => setValue(e.target.value)} placeholder='Type your message...' value={value} />
             <button onClick={() => send(value)}>Send</button>
         </>
     )

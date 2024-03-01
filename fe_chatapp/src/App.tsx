@@ -19,11 +19,11 @@ function App() {
     setSocket(newSocket)
   }, [setSocket])
 
-  const messageListener = (message: string) => {
-    setMessages([...messages, message])
+  const messageListener = (message: string) => { // listen to incoming messages
+    setMessages([...messages, message]) // add message to messages
   }
   useEffect(() => {
-    socket?.on("message", messageListener)
+    socket?.on("message", messageListener) // if we have an event and it is a socket run messageListener
     return () => {
       socket?.off("message", messageListener)
     }
@@ -36,6 +36,8 @@ function App() {
     </>
   )
 }
+
+export default App
 
 //   return (
 //     <>
@@ -62,5 +64,3 @@ function App() {
 //     </>
 //   )
 // }
-
-export default App
