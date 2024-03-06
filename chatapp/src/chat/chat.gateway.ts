@@ -7,7 +7,7 @@ import {
 
 // port 8001 is the port the back end is serving on
 // {cors: '*'} makes sure it's accepts every front end connection
-@WebSocketGateway(8001, { cors: '*' })
+@WebSocketGateway(8002, { cors: '*' })
 export class ChatGateway {
 	@WebSocketServer()
 	server; // this creates an instance of a server
