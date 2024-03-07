@@ -32,7 +32,6 @@ import io from 'socket.io-client';
       this.socket.on('newMessage', (message) => {
         this.messages.push(message);
       });
-      console.log(message);
     },
     methods: {
       sendMessage() {
