@@ -20,15 +20,15 @@
 // chat.controller.ts
 
 import { Controller, Post, Body } from '@nestjs/common';
-import { AppGateway } from '../app.gateway';
+import { ChatGateway } from '../chat/chat.gateway';
 
 @Controller('api/messages')
 export class ChatController {
-  constructor(private readonly appGateway: AppGateway) {}
+  constructor(private readonly appGateway: ChatGateway) {}
 
   @Post()
   async sendMessage(@Body() message: { content: string, sender: string, recipient: string }): Promise<any> {
-    this.appGateway.server.to(message.recipient).emit('newMessage', message); // Broadcast the message to the recipient
-    return message;
+    // this.appGateway.server.to(message.recipient).emit('newMessage', message); // Broadcast the message to the recipient
+    // return message;
   }
 }

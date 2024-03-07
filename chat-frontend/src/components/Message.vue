@@ -1,17 +1,17 @@
 <!-- ChatComponent.vue -->
 
 <template>
-    <div>
-      <div v-for="msg in messages" :key="msg.id">
-        <strong>{{ msg.sender }}:</strong> {{ msg.content }}
-      </div>
-      <input v-model="typedMessage" placeholder="Type your message..." />
-      <button @click="sendMessage">Send</button>
+  <div>
+    <div v-for="msg in messages" :key="msg.id">
+      <strong>{{ msg.sender }}:</strong> {{ msg.content }}
     </div>
-  </template>
-  
-  <script>
-  import io from 'socket.io-client';
+    <input v-model="typedMessage" placeholder="Type your message..." />
+    <button @click="sendMessage">Send</button>
+  </div>
+</template>
+
+<script>
+import io from 'socket.io-client';
   
   export default {
     data() {
@@ -23,15 +23,16 @@
       };
     },
     mounted() {
-      this.socket = io('http://localhost:8002');
+      this.socket = io('http://localhost:8001');
   
       this.socket.on('connect', () => {
         console.log(`Connected with id: ${this.socket.id}`);
       });
   
       this.socket.on('newMessage', (message) => {
-        // this.messages.push(message);
+        this.messages.push(message);
       });
+      console.log(message);
     },
     methods: {
       sendMessage() {
@@ -40,11 +41,10 @@
           sender: this.socket.id,
           recipient: this.recipient,
         };
-        // if (socket) {
-          
-        // }
+        
+        this.messages = [];
+
         this.socket.emit('sendMessage', message);
-        this.messages.push(message);
         this.typedMessage = '';
       },
     },
