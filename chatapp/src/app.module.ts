@@ -34,12 +34,16 @@
 // app.module.ts
 
 import { Module } from '@nestjs/common';
-import { ChatModule } from './chat/chat.module';
+// import { ChatModule } from './chat/chat.module';
+// import { ChatController } from './chat/chat.controller';
 // import { AppGateway } from './app.gateway'; // Add this import
+import { TestController } from './test.controller';
 
 @Module({
-  imports: [ChatModule],
-  controllers: [],
+  // imports: [ChatModule],
+  imports: [],
+  controllers: [TestController]
+  // controllers: [ChatController],
   // providers: [AppGateway], // Add AppGateway to providers
 })
 export class AppModule {}

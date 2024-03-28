@@ -1,5 +1,3 @@
-<!-- ChatComponent.vue -->
-
 <template>
   <div>
     <div v-for="msg in messages" :key="msg.id">
@@ -12,6 +10,7 @@
 
 <script>
 import io from 'socket.io-client';
+import axios from 'axios';
   
   export default {
     data() {
@@ -34,7 +33,7 @@ import io from 'socket.io-client';
       });
     },
     methods: {
-      sendMessage() {
+      async sendMessage() {
         const message = {
           content: this.typedMessage,
           sender: this.socket.id,
@@ -45,6 +44,14 @@ import io from 'socket.io-client';
 
         this.socket.emit('sendMessage', message);
         this.typedMessage = '';
+
+        try {
+          const response = await axios.get(`http://localhost:3001/chat/messages?channel=general`);
+          return response.data;
+        } catch (error) {
+            console.error('Error fetching chat messages:', error);
+            return { error: 'Error fetching chat messages' };
+        }
       },
     },
   };
@@ -53,102 +60,3 @@ import io from 'socket.io-client';
   <style scoped>
   /* Add your styles here if needed */
   </style>
-  
-
-<!-- <template>
-    <div>
-      <input
-        type="text"
-        id="messageInput"
-        v-model="typedMessage"
-        @input="handleInputChange"
-        @focus="handleInputFocus"
-        @blur="handleInputBlur"
-      />
-      <button @click="sendMessage">Send</button>
-    </div>
-  </template>
-  
-  <script>
-  import io from 'socket.io-client';
-  
-  export default {
-    data() {
-      return {
-        typedMessage: '',
-        isInputFocused: false,
-        socket: null,
-      };
-    },
-    mounted() {
-
-      if (!this.socket) {
-        this.socket = io('http://localhost:8001');
-        this.socket.on('newMessage', (message) => {
-            console.log('Received new message:', message);
-
-      });}
-    },
-    methods: {
-      handleInputChange() {
-
-      },
-      sendMessage() {
-
-        this.socket.emit('sendMessage', { content: this.typedMessage });
-        this.typedMessage = '';
-      }
-    },
-    beforeDestroy() {
-
-      if (this.socket) {
-        this.socket.disconnect();
-      }
-    }
-  };
-  </script>
-  
-  <style>
-
-  </style> -->
-
-<!-- ££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££ -->
-  
-<!-- <template>
-    <div>
-      <input
-        type="text"
-        id="messageInput"
-        v-model="typedMessage"
-        @input="handleInputChange"
-        @focus="handleInputFocus"
-        @blur="handleInputBlur"
-      />
-      <button @click="logMessage">Send</button>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        typedMessage: '',
-        isInputFocused: false
-      };
-    },
-    methods: {
-      handleInputChange() {
-
-      },
-      logMessage() {
-        console.log('Typed Message:', this.typedMessage);
-        this.typedMessage = ''; // Clear the text field
-      }
-    }
-  };
-  </script>
-  
-  <style>
-
-  </style>
-   -->
