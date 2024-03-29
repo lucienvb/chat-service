@@ -1,24 +1,18 @@
 import { Controller, Get, Req } from '@nestjs/common'
 import { Request } from 'express'
-
-export class channel {
-	Name: string;
-	Messages: string[];
-
-	constructor(name: string, messages: string[]) {
-		this.Name = name;
-		this.Messages = messages;
-	}
-}
+import { Channel } from './chat/chat-channel.interface'
+import { ChatService } from './chat/chat.service'
 
 @Controller('test')
 export class TestController {
 	
-	private channelMap: { [key: string]: channel } = {};
-	
-	constructor() {
-		this.channelMap['lvan-bus'] = new channel('lvan-bus', ['message1', 'message2']);
-		this.channelMap['sbos'] = new channel('sbos', ['message3']);
+	constructor(private channelMap: ChatService) {
+		// this.channelMap['f'] = new Channel('lvan-bus', ['message1', 'message2']);
+		this.channelMap.addChannel('f', ['message']);
+		this.channelMap['s'] = new Channel('sbos', ['message3']);
+		
+		// console.log(`${this.channelMap['f'].Name}`);
+		// console.log(`${this.channelMap['s'].Name}`);
 	}
 	
 	@Get()

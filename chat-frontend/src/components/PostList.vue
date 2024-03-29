@@ -2,6 +2,12 @@
     <div>
         <input v-model="typedQuery" placeholder="Chat name..." @keyup.enter="getChat"/>
         <button @click="getChat">Search</button>
+        <br/><br/>
+        <!-- <br/><br/><br/><br/> -->
+        <div v-for="msg in messages" :key="msg.id">
+            <strong> {{ msg }}</strong>
+        </div>
+
         <!-- <div v-for="post in posts" :key="post.id">
             <h3>{{ post.id }}. {{ post.title }}</h3>
             <p>{{ post.body }}</p>
@@ -18,23 +24,25 @@ export default {
     data() {
         return {
             typedQuery: '',
-            // posts: [],
+            messages: [],
         }
     },
     methods: {
         getChat() {
+            this.messages = [];
             const query = {
                 content: this.typedQuery,
                 recipient: this.recipient,
             }
-            axios.get(`http://localhost:3000/api/test?chatName=${query.content}`)
+            axios.get(`http://localhost:3001/api/test?chatName=${query.content}`)
             .then((response) => {
-                console.log('response:', response)
-                this.posts = response.data
-
+                response.data.forEach((element) => {
+                    this.messages.push(element);
+                });
             })
             .catch((error) => {
-                console.log('Errorrrr:', error)
+                this.messages.push('Chat not found');
+                console.log('Chat not found:', error)
             })
         }
     }

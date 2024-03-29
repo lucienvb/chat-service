@@ -1,17 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { Channel } from './chat-channel.interface'
 
-// @Injectable()
-// export class ChatService {
-//   private messages: string[] = []; // For demonstration, using an in-memory array to store messages
+@Injectable()
+export class ChatService {
+    private channelMap: { [key: string]: Channel } = {};
 
-//   saveMessage(message: string): string {
-//     // Save the message to the array or perform other business logic
-//     this.messages.push(message);
-//     return message;
-//   }
-
-//   getMessages(): string[] {
-//     // Retrieve all stored messages
-//     return this.messages;
-//   }
-// }
+    // addChannel does not work yet
+    addChannel(Name: string, Messages: string[]) {
+        this.channelMap['g'] = new Channel('safoh', ['message 4'])
+    }
+}
