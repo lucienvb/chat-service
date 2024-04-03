@@ -1,4 +1,4 @@
-import { Controller, Get, Req } from '@nestjs/common'
+import { Controller, Get, Req, Post } from '@nestjs/common'
 import { Request } from 'express'
 import { Channel } from './chat/chat-channel.interface'
 import { ChatService } from './chat/chat.service'
@@ -29,5 +29,13 @@ export class TestController {
 			console.log("query does not match");
 		return 'Query not found'
     }
+
+	@Post()
+	createChat(@Req() request: Request): string {
+		const	chatName = request.body.body;
+		this.object.addChannel(chatName, [`First message of ${chatName}`]);
+		console.log(`Body: ${chatName}`);
+		return `${chatName}`
+	}
 
 }

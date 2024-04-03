@@ -1,5 +1,10 @@
 <template>
     <div>
+        <!-- createChat -->
+        <input v-model="typedNew" placeholder="Chat name..." @keyup.enter="createChat"/>
+        <button @click="createChat">Create</button>
+        <br/><br/>
+        <!-- getChat -->
         <input v-model="typedQuery" placeholder="Chat name..." @keyup.enter="getChat"/>
         <button @click="getChat">Search</button>
         <br/><br/>
@@ -29,11 +34,10 @@ export default {
     },
     methods: {
         getChat() {
-            this.messages = [];
             const query = {
                 content: this.typedQuery,
-                recipient: this.recipient,
             }
+            this.typedQuery = '';
             axios.get(`http://localhost:3001/api/test?chatName=${query.content}`)
             .then((response) => {
                 response.data.forEach((element) => {
@@ -43,6 +47,28 @@ export default {
             .catch((error) => {
                 this.messages.push('Chat not found');
                 console.log('Chat not found:', error)
+            })
+        },
+        createChat() {
+            const newChat = {
+                chatName: this.typedNew,
+            }
+            console.log(`typedNew: ${this.typedNew}`);
+            console.log(`chatName: ${newChat.chatName}`);
+            this.typedNew = '';
+            axios.post(`http://localhost:3001/api/test`,
+                {
+                    title: 'foo',
+                    body: newChat.chatName,
+                    userId: 42,
+                })
+            .then((response) => {
+                // console.log(`${newChat.chatName} successfully created`)
+                this.messages.push(`${newChat.chatName} successfully created`);
+            })
+            .catch((error) => {
+                console.log(`Failed to create ${this.chatName}`, error)
+                this.messages.push(`Failed to create ${this.chatName}`);
             })
         }
     }
