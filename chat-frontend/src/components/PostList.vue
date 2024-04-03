@@ -29,6 +29,7 @@ export default {
     data() {
         return {
             typedQuery: '',
+            typedNew: '',
             messages: [],
         }
     },
@@ -53,8 +54,6 @@ export default {
             const newChat = {
                 chatName: this.typedNew,
             }
-            console.log(`typedNew: ${this.typedNew}`);
-            console.log(`chatName: ${newChat.chatName}`);
             this.typedNew = '';
             axios.post(`http://localhost:3001/api/test`,
                 {
@@ -63,8 +62,7 @@ export default {
                     userId: 42,
                 })
             .then((response) => {
-                // console.log(`${newChat.chatName} successfully created`)
-                this.messages.push(`${newChat.chatName} successfully created`);
+                this.messages.push(`Sweet, you have created a new chat named \"${newChat.chatName}\".`);
             })
             .catch((error) => {
                 console.log(`Failed to create ${this.chatName}`, error)
