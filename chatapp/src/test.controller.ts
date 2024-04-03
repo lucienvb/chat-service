@@ -6,13 +6,11 @@ import { ChatService } from './chat/chat.service'
 @Controller('test')
 export class TestController {
 	
-	constructor(private channelMap: ChatService) {
-		// this.channelMap['f'] = new Channel('lvan-bus', ['message1', 'message2']);
-		this.channelMap.addChannel('f', ['message']);
-		this.channelMap['s'] = new Channel('sbos', ['message3']);
+	constructor(private object: ChatService) {
 		
-		// console.log(`${this.channelMap['f'].Name}`);
-		// console.log(`${this.channelMap['s'].Name}`);
+		this.object.addChannel('sbos', ['message of sbos']);
+		this.object.addChannel('lvan-bus', ['message of lvan-bus']);
+		// this.object.printChannel('f');
 	}
 	
 	@Get()
@@ -23,9 +21,9 @@ export class TestController {
         console.log("All query params:", queryParam);
         console.log("value of param:", param);
 
-		if (this.channelMap[param]) {
+		if (this.object.channelMap[param]) {
 			console.log("query matches");
-        	return JSON.stringify(this.channelMap[param].Messages);
+        	return JSON.stringify(this.object.channelMap[param].Messages);
 		}
 		else
 			console.log("query does not match");

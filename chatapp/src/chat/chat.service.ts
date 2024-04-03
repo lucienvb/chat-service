@@ -3,10 +3,14 @@ import { Channel } from './chat-channel.interface'
 
 @Injectable()
 export class ChatService {
-    private channelMap: { [key: string]: Channel } = {};
+    public  channelMap: { [key: string]: Channel } = {};
 
-    // addChannel does not work yet
     addChannel(Name: string, Messages: string[]) {
-        this.channelMap['g'] = new Channel('safoh', ['message 4'])
+        this.channelMap[Name] = new Channel(Name, Messages)
+    }
+    
+    printChannel(key: string) {
+        console.log(`Name: ${this.channelMap[key].Name}`)
+        console.log(`Messages: ${this.channelMap[key].Messages}`)
     }
 }
