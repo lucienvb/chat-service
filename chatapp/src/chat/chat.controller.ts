@@ -9,7 +9,7 @@ export class ChatController {
 		
 		this.object.addChannel('sbos', ['message of sbos']);
 		this.object.addChannel('lvan-bus', ['message of lvan-bus']);
-		// this.object.printChannel('f');
+		this.object.addMessage('lvan-bus', 'excuse me, come again');
 	}
 	
 	@Get()

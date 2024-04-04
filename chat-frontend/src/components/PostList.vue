@@ -8,26 +8,44 @@
         <input v-model="typedQuery" placeholder="Chat name..." @keyup.enter="getChat"/>
         <button @click="getChat">Search</button>
         <br/><br/>
-        <!-- <br/><br/><br/><br/> -->
+        <br/><br/><br/><br/>
         <div v-for="msg in messages" :key="msg.id">
             <strong> {{ msg }}</strong>
         </div>
-
-
-
+		<div v-for="msg in messages" :key="msg.id">
+      		<strong>{{ msg.sender }}</strong> {{ msg.content }}
+		</div>
+		<input v-model="typedMessage" placeholder="Type your message..." @keyup.enter="sendMessage" /> 
+		<button @click="sendMessage">Send</button>
     </div>
 </template>
 
 <script>
+
 import axios from 'axios'
+import io from 'socket.io-client'
+
 export default {
-    name: 'PostList',
+    // name: 'PostList',
     data() {
         return {
+			typedMessage: '',
             typedQuery: '',
             typedNew: '',
             messages: [],
+			channel: ''
         }
+    },
+	mounted() {
+      this.socket = io('http://localhost:8001');
+  
+      this.socket.on('connect', () => {
+        console.log(`Connected with id: ${this.socket.id}`);
+      });
+  
+      this.socket.on('newMessage', (message) => {
+        this.messages.push(message);
+      });
     },
     methods: {
         getChat() {
@@ -39,6 +57,7 @@ export default {
             .then((response) => {
                 response.data.forEach((element) => {
                     this.messages.push(element);
+					this.channel = query.content;
                 });
             })
             .catch((error) => {
@@ -67,7 +86,21 @@ export default {
                 console.log(`Failed to create ${this.chatName}`, error)
                 this.messages.push(`Failed to create ${this.chatName}`);
             })
-        }
+        },
+		async sendMessage() {
+        const message = {
+          content: this.typedMessage,
+          sender: this.socket.id,
+          recipient: this.recipient,
+		  channel: this.channel,
+        };
+        
+        this.messages = [];
+		console.log(`this channel: ${this.channel}`)
+
+        this.socket.emit('sendMessage', message);
+        this.typedMessage = '';
+      },
     }
 }
 </script>

@@ -18,4 +18,12 @@ export class ChatService {
         console.log(`Name: ${this.channelMap[key].Name}`)
         console.log(`Messages: ${this.channelMap[key].Messages}`)
     }
+
+    getMessages(key: string): string[] {
+        return (this.channelMap[key].Messages);
+    }
+
+    addMessage(key: string, message: string) {
+        this.channelMap[key].Messages.push(message);
+    }
 }
