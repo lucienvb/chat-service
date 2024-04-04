@@ -5,8 +5,13 @@ import { Channel } from './chat-channel.interface'
 export class ChatService {
     public  channelMap: { [key: string]: Channel } = {};
 
-    addChannel(Name: string, Messages: string[]) {
+    addChannel(Name: string, Messages: string[]): boolean {
+        if (this.channelMap[Name]) {
+            console.log(`${Name} already exists`);
+            return false;
+        }
         this.channelMap[Name] = new Channel(Name, Messages)
+        return true;
     }
     
     printChannel(key: string) {

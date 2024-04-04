@@ -13,11 +13,7 @@
             <strong> {{ msg }}</strong>
         </div>
 
-        <!-- <div v-for="post in posts" :key="post.id">
-            <h3>{{ post.id }}. {{ post.title }}</h3>
-            <p>{{ post.body }}</p>
-            <hr />
-        </div> -->
+
 
     </div>
 </template>
@@ -62,7 +58,10 @@ export default {
                     userId: 42,
                 })
             .then((response) => {
-                this.messages.push(`Sweet, you have created a new chat named \"${newChat.chatName}\".`);
+				if (response.data == '0')
+                	this.messages.push(`Sweet, you have created a new chat named \"${newChat.chatName}\".`);
+				else
+					this.messages.push(`That sucks! \"${newChat.chatName}\" is already taken...`);
             })
             .catch((error) => {
                 console.log(`Failed to create ${this.chatName}`, error)

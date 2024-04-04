@@ -1,5 +1,5 @@
-import { Controller, Get, Req, Post } from '@nestjs/common'
-import { Request } from 'express'
+import { Controller, Get, Req, Post, Res } from '@nestjs/common'
+import { Request, Response } from 'express'
 import { ChatService } from './chat.service'
 
 @Controller('test')
@@ -30,11 +30,14 @@ export class ChatController {
     }
 
 	@Post()
-	createChat(@Req() request: Request): string {
+	createChat(@Req() request: Request, @Res() response: Response): string {
 		const	chatName = request.body.body;
-		this.object.addChannel(chatName, [`${chatName} IS LIVE\t(*_*)\tSTART TEXTING NOW!`]);
-		console.log(`Body: ${chatName}`);
-		return `${chatName}`
+		if (!this.object.addChannel(chatName, [`${chatName} IS LIVE\t(*_*)\tSTART TEXTING NOW!`])) {
+			console.log(`test`);
+			response.status(200).send('1');
+			return ;
+		}
+		response.status(200).send('0');
 	}
 
 }
