@@ -7,9 +7,9 @@ export class ChatGateway {
 	@WebSocketServer()
 	server: Server;
 
-	constructor(private channelMap: ChatService) {
-		console.log(`${this.channelMap['s'].Name}`);
-	}
+	// constructor(private channelMap: ChatService) {
+	// 	console.log(`${this.channelMap['s'].Name}`);
+	// }
 }
 
 // import { 
