@@ -1,5 +1,11 @@
 <template>
     <div>
+        <!-- block and deblock -->
+        <input v-model="player" placeholder="Player's username...">
+        <button @click="changeAccess(true)">Block</button>
+        <button @click="changeAccess(false)">Deblock</button>
+        <br/><br/>
+
         <!-- createChat -->
         <input v-model="typedNew" placeholder="Chat name..." @keyup.enter="createChat"/>
         <button @click="createChat">Create</button>
@@ -12,9 +18,6 @@
         <div v-for="msg in messages" :key="msg.id">
             <strong> {{ msg }}</strong>
         </div>
-		<div v-for="msg in messages" :key="msg.id">
-      		<strong>{{ msg.sender }}</strong> {{ msg.content }}
-		</div>
 		<input v-model="typedMessage" placeholder="Type your message..." @keyup.enter="sendMessage" /> 
 		<button @click="sendMessage">Send</button>
     </div>
@@ -33,7 +36,9 @@ export default {
             typedQuery: '',
             typedNew: '',
             messages: [],
-			channel: ''
+			channel: '',
+			user: 'lvan-bus', // user name of the current player (get from Intra information)
+            player: ''
         }
     },
 	mounted() {
@@ -51,26 +56,33 @@ export default {
         getChat() {
             const query = {
                 content: this.typedQuery,
+				user: this.user
             }
             this.typedQuery = '';
-            axios.get(`http://localhost:3001/api/test?chatName=${query.content}`)
+            axios.get(`http://localhost:3001/api/test?chatName=${query.content}&user=${query.user}`)
             .then((response) => {
-                response.data.forEach((element) => {
-                    this.messages.push(element);
-					this.channel = query.content;
-                });
+				if (response.data == '1')
+					this.messages.push(`Snap! Your blocked :(`);
+				else {
+					response.data.forEach((element) => {
+						this.messages.push(element);
+						this.channel = query.content;
+					});
+				}
             })
             .catch((error) => {
                 this.messages.push('Chat not found');
                 console.log('Chat not found:', error)
             })
         },
+
         createChat() {
             const newChat = {
                 chatName: this.typedNew,
+                changeAccess: false
             }
             this.typedNew = '';
-            axios.post(`http://localhost:3001/api/test`,
+            axios.post(`http://localhost:3001/api/test?info=${newChat.changeAccess}`,
                 {
                     title: 'foo',
                     body: newChat.chatName,
@@ -87,20 +99,49 @@ export default {
                 this.messages.push(`Failed to create ${this.chatName}`);
             })
         },
-		async sendMessage() {
-        const message = {
-          content: this.typedMessage,
-          sender: this.socket.id,
-          recipient: this.recipient,
-		  channel: this.channel,
-        };
-        
-        this.messages = [];
-		console.log(`this channel: ${this.channel}`)
 
-        this.socket.emit('sendMessage', message);
-        this.typedMessage = '';
-      },
+        changeAccess(isBlock) {
+            const block = {
+                chatName: this.channel,
+                player: this.player,
+                changeAccess: true
+            }
+            if (isBlock) {
+                console.log(`block: ${isBlock}`);
+                this.player = '';
+                axios.post(`http://localhost:3001/api/test?info=${block.changeAccess}&block=${isBlock}&user=${block.player}`,
+                {
+                    title: 'foo',
+                    body: block.chatName,
+                    userId: 42
+                })
+            .then((response) => {
+				if (response.data == '2')
+                	this.messages.push(`\"${block.player}\" is now blocked from ${block.chatName}.`);
+				else
+					this.messages.push(`\"${block.player}\" is already blocked.`);
+            })
+            .catch((error) => {
+                console.log(`Failed to block ${block.player}`, error)
+                this.messages.push(`Failed to block ${block.player}`);
+            })
+            }
+        },
+        
+		async sendMessage() {
+			const message = {
+			content: this.typedMessage,
+			sender: this.socket.id,
+			recipient: this.recipient,
+			channel: this.channel,
+			};
+			
+			this.messages = [];
+			console.log(`this channel: ${this.channel}`)
+
+			this.socket.emit('sendMessage', message);
+			this.typedMessage = '';
+		},
     }
 }
 </script>

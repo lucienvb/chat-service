@@ -14,30 +14,52 @@ export class ChatController {
 	
 	@Get()
     findAll(@Req() request: Request): string {
-        const   queryParam = request.query;
-        const   param = request.query['chatName'] as string;
+        const   chatName = request.query['chatName'] as string;
+        const   user = request.query['user'] as string;
 
-        console.log("All query params:", queryParam);
-        console.log("value of param:", param);
+		console.log(`${chatName} and ${user}`);
 
-		if (this.object.channelMap[param]) {
-			console.log("query matches");
-        	return JSON.stringify(this.object.channelMap[param].Messages);
+		if (this.object.channelMap[chatName]) {
+			if (this.object.isBlocked(chatName, user)) {
+				return JSON.stringify('1');
+			}
+			console.log('query matches');
+        	return JSON.stringify(this.object.channelMap[chatName].Messages);
 		}
-		else
-			console.log("query does not match");
-		return 'Query not found'
+		return 'query failed';
     }
 
 	@Post()
 	createChat(@Req() request: Request, @Res() response: Response): string {
 		const	chatName = request.body.body;
-		if (!this.object.addChannel(chatName, [`${chatName} IS LIVE\t(*_*)\tSTART TEXTING NOW!`])) {
-			console.log(`test`);
-			response.status(200).send('1');
-			return ;
-		}
-		response.status(200).send('0');
-	}
+		const	changeAccess = request.query['info'] as string;
+		let		block = '';
+		if (request.query['block'])
+			block = request.query['block'] as string;
+		let		user = '';
+		if (request.query['user'])
+			user = request.query['user'] as string;
 
+		console.log(`changeAccess: ${changeAccess}`);
+		console.log(`block: ${block}`);
+		console.log(`user: ${user}`);
+
+		if (changeAccess == 'false') {
+			if (!this.object.addChannel(chatName, [`${chatName} IS LIVE\t(*_*)\tSTART TEXTING NOW!`])) {
+				console.log(`test`);
+				response.status(200).send('1');
+				return ;
+			}
+			response.status(200).send('0');
+		}
+		else if (changeAccess == 'true' && block == 'true') {
+			console.log("checker");
+			let blocker = 'lvan-bus';
+			if (this.object.block(chatName, user, blocker))
+				response.status(200).send('2');
+			// else
+			// 	return ;
+		// 	response.status(200).send('3');
+		}
+	}
 }
